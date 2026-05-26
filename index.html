@@ -1,0 +1,546 @@
+<!-- PERADUAN GEMPAK — Pure HTML/CSS/JS, unique prefixed, CMS-safe -->
+<style>
+  /* === PERADUAN GEMPAK STYLES — prefix: pgx- === */
+  .pgx-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 28px 20px;
+    box-sizing: border-box;
+    font-family: inherit;
+  }
+  .pgx-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+  .pgx-panel {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .pgx-head {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 18px 14px;
+    border-bottom: 3px solid #e8002d;
+    background: #fff;
+  }
+  .pgx-head-title {
+    font-size: 17px;
+    font-weight: 800;
+    color: #111;
+    margin: 0;
+    line-height: 1.2;
+  }
+  .pgx-more {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #e8002d;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .pgx-more:hover {
+    text-decoration: underline;
+  }
+
+  .pgx-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .pgx-list > li {
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .pgx-list > li:last-child {
+    border-bottom: none;
+  }
+  .pgx-list > li:hover {
+    background: #fafafa;
+  }
+
+  .pgx-divider {
+    display: block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #bbb;
+    padding: 7px 14px 6px;
+    background: #fafafa;
+    border-top: 2px solid #ececec;
+  }
+
+  /* Row — fixed height based on image 16:9 at 120px wide = 67.5px + 20px padding = ~108px */
+  .pgx-row {
+    display: block;
+    overflow: hidden;
+    position: relative;
+    min-height: 108px;
+  }
+  .pgx-row::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  .pgx-row-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+  }
+
+  /* Date col — fixed width, full row height */
+  .pgx-date {
+    float: left;
+    width: 58px;
+    min-height: 108px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-right: 1px solid #f0f0f0;
+    box-sizing: border-box;
+    padding: 0 4px;
+  }
+  .pgx-d-num {
+    display: block;
+    font-size: 24px;
+    font-weight: 900;
+    line-height: 1;
+    color: #e8002d;
+    letter-spacing: -0.03em;
+  }
+  .pgx-d-num.sm {
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+  }
+  .pgx-d-mon {
+    display: block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-top: 3px;
+  }
+  .pgx-d-dow {
+    display: block;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #ccc;
+    margin-top: 2px;
+  }
+
+  /* Image col — 120px wide, 16:9 = 67.5px height, padded */
+  .pgx-img-col {
+    float: left;
+    width: 140px;
+    padding: 12px 10px;
+    box-sizing: border-box;
+  }
+  /* 16:9 ratio trick — width of image area = 120px, height = 120*(9/16) = 67.5px */
+  .pgx-img-wrap {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #eee;
+  }
+  .pgx-img-wrap img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  /* Body col — takes remaining space */
+  .pgx-body {
+    overflow: hidden;
+    min-height: 108px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 12px 14px 12px 0;
+    box-sizing: border-box;
+  }
+
+  /* Title — always exactly 2 lines */
+  .pgx-ttl {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #111;
+    line-height: 1.4;
+    margin: 0 0 4px 0;
+    padding: 0;
+    word-break: break-word;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    min-height: calc(13px * 1.4 * 2); /* reserve 2 lines always */
+  }
+  .pgx-list > li:hover .pgx-ttl {
+    color: #e8002d;
+  }
+  .pgx-ttl.dim {
+    color: #aaa;
+  }
+
+  .pgx-venue {
+    display: block;
+    font-size: 11px;
+    color: #888;
+    line-height: 1.3;
+    margin: 0 0 5px 0;
+    padding: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pgx-venue::before {
+    content: "📍 ";
+    font-size: 10px;
+  }
+
+  .pgx-actions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .pgx-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    padding: 3px 8px;
+    white-space: nowrap;
+    line-height: 1.3;
+  }
+  .pgx-badge.deadline {
+    color: #c0001c;
+    background: #fff0f0;
+    border: 1px solid #ffd0d0;
+  }
+  .pgx-badge.deadline::before {
+    content: "⏰ ";
+  }
+  .pgx-badge.bopen {
+    color: #006a30;
+    background: #edfaf3;
+    border: 1px solid #b3e6cc;
+  }
+  .pgx-badge.bopen::before {
+    content: "🎟 ";
+  }
+  .pgx-badge.bclosed {
+    color: #aaa;
+    background: #f5f5f5;
+    border: 1px solid #e8e8e8;
+  }
+  .pgx-badge.bclosed::before {
+    content: "✓ ";
+  }
+
+  .pgx-cal {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #555;
+    text-decoration: none;
+    background: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 3px 8px;
+    white-space: nowrap;
+    line-height: 1.3;
+  }
+  .pgx-cal::before {
+    content: "📅 ";
+  }
+  .pgx-cal:hover {
+    background: #e5e5e5;
+    color: #111;
+  }
+
+  .pgx-row.dim {
+    opacity: 0.55;
+  }
+  .pgx-loading {
+    padding: 24px;
+    text-align: center;
+    color: #aaa;
+    font-size: 13px;
+  }
+
+  @media (max-width: 700px) {
+    .pgx-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    .pgx-head-title {
+      font-size: 15px;
+    }
+    .pgx-date {
+      width: 46px;
+      min-height: 96px;
+    }
+    .pgx-d-num {
+      font-size: 19px;
+    }
+    .pgx-img-col {
+      width: 116px;
+      padding: 10px 8px;
+    }
+    .pgx-body {
+      min-height: 96px;
+      padding: 10px 10px 10px 0;
+    }
+    .pgx-ttl {
+      font-size: 12px;
+    }
+    .pgx-venue {
+      font-size: 10px;
+    }
+    .pgx-badge,
+    .pgx-cal {
+      font-size: 9px;
+      padding: 2px 6px;
+    }
+  }
+  @media (max-width: 400px) {
+    .pgx-date {
+      width: 38px;
+      min-height: 88px;
+    }
+    .pgx-d-num {
+      font-size: 16px;
+    }
+    .pgx-img-col {
+      width: 96px;
+      padding: 8px 6px;
+    }
+    .pgx-body {
+      min-height: 88px;
+    }
+    .pgx-ttl {
+      font-size: 11px;
+    }
+  }
+</style>
+
+<div class="pgx-wrap">
+  <div class="pgx-grid">
+    <div class="pgx-panel">
+      <div class="pgx-head">
+        <h2 class="pgx-head-title">GMW Giveaways</h2>
+        <a
+          class="pgx-more"
+          href="https://gempak.com/gmwgiveaways"
+          target="_blank"
+          rel="noopener"
+          >Lihat Lagi →</a
+        >
+      </div>
+      <ul class="pgx-list" id="pgx-list-giveaway">
+        <li><span class="pgx-loading">Memuatkan...</span></li>
+      </ul>
+    </div>
+
+    <div class="pgx-panel">
+      <div class="pgx-head">
+        <h2 class="pgx-head-title">Gempak Movie Night Out</h2>
+        <a
+          class="pgx-more"
+          href="https://gempak.com/gempakmovienightout"
+          target="_blank"
+          rel="noopener"
+          >Lihat Lagi →</a
+        >
+      </div>
+      <ul class="pgx-list" id="pgx-list-movie">
+        <li><span class="pgx-loading">Memuatkan...</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    "use strict";
+
+    var DATA =
+      "https://raw.githubusercontent.com/wandunno/peraduan-data/main/data.json";
+
+    function ics(title, ds, venue) {
+      var y = ds.slice(0, 4),
+        m = ds.slice(4, 6),
+        d = ds.slice(6, 8);
+      var nd = new Date(+y, +m - 1, +d + 1);
+      var p = function (n) {
+        return ("0" + n).slice(-2);
+      };
+      var ne = nd.getFullYear() + p(nd.getMonth() + 1) + p(nd.getDate());
+      var c = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Gempak//EN",
+        "BEGIN:VEVENT",
+        "DTSTART;VALUE=DATE:" + ds,
+        "DTEND;VALUE=DATE:" + ne,
+        "SUMMARY:" + title.replace(/[,;\\]/g, "\\$&"),
+        "LOCATION:" + (venue || "").replace(/[,;\\]/g, "\\$&"),
+        "END:VEVENT",
+        "END:VCALENDAR",
+      ].join("\r\n");
+      return "data:text/calendar;charset=utf-8," + encodeURIComponent(c);
+    }
+
+    function card(item) {
+      var open = item.status === "open";
+      var bclass = open
+        ? item.badge === "Sertai Sekarang"
+          ? "bopen"
+          : "deadline"
+        : "bclosed";
+      var dc = open ? "#e8002d" : "#bbb";
+
+      var dateInner =
+        item.day && item.day.length <= 2
+          ? '<span class="pgx-d-num" style="color:' +
+            dc +
+            '">' +
+            item.day +
+            "</span>" +
+            '<span class="pgx-d-mon">' +
+            item.month +
+            "</span>" +
+            '<span class="pgx-d-dow">' +
+            (item.dow || "") +
+            "</span>"
+          : '<span class="pgx-d-num sm" style="color:' +
+            dc +
+            '">' +
+            item.month +
+            (item.dow ? "<br>" + item.dow : "") +
+            "</span>";
+
+      var calBtn =
+        open && item.cal_date
+          ? '<a class="pgx-cal" href="' +
+            ics(item.cal_title || item.title, item.cal_date, item.venue) +
+            '" download="event.ics">+ Kalendar</a>'
+          : "";
+
+      return (
+        "<li>" +
+        '<div class="pgx-row' +
+        (open ? "" : " dim") +
+        '">' +
+        '<a class="pgx-row-link" href="' +
+        item.link +
+        '" target="_blank" rel="noopener" aria-label="' +
+        item.title +
+        '"></a>' +
+        '<div class="pgx-date">' +
+        dateInner +
+        "</div>" +
+        '<div class="pgx-img-col"><div class="pgx-img-wrap"><img src="' +
+        item.thumb +
+        '" alt="" loading="lazy"></div></div>' +
+        '<div class="pgx-body">' +
+        '<span class="pgx-ttl' +
+        (open ? "" : " dim") +
+        '">' +
+        item.title +
+        "</span>" +
+        '<span class="pgx-venue">' +
+        item.venue +
+        "</span>" +
+        '<div class="pgx-actions">' +
+        '<span class="pgx-badge ' +
+        bclass +
+        '">' +
+        item.badge +
+        "</span>" +
+        calBtn +
+        "</div>" +
+        "</div>" +
+        "</div>" +
+        "</li>"
+      );
+    }
+
+    function render(id, items) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var open = items.filter(function (i) {
+        return i.status === "open";
+      });
+      var closed = items.filter(function (i) {
+        return i.status !== "open";
+      });
+      var h = "";
+      open.forEach(function (i) {
+        h += card(i);
+      });
+      if (closed.length) {
+        h += '<li><span class="pgx-divider">Sudah Tamat</span></li>';
+        closed.forEach(function (i) {
+          h += card(i);
+        });
+      }
+      el.innerHTML = h;
+    }
+
+    fetch(DATA)
+      .then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        return r.json();
+      })
+      .then(function (d) {
+        render("pgx-list-giveaway", d.giveaway || []);
+        render("pgx-list-movie", d.movie || []);
+      })
+      .catch(function (e) {
+        console.error("[pgx]", e);
+        ["pgx-list-giveaway", "pgx-list-movie"].forEach(function (id) {
+          var el = document.getElementById(id);
+          if (el)
+            el.innerHTML =
+              '<li><span class="pgx-loading">Gagal memuatkan. Sila refresh.</span></li>';
+        });
+      });
+  })();
+</script>
